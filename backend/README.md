@@ -26,3 +26,10 @@ make run
 ```
 
 Com o servidor em execução, acesse `http://127.0.0.1:8000/health`.
+
+## Docker
+
+Na raiz do repositório, execute `make docker-up` para construir a imagem e
+iniciar a API junto com o PostgreSQL. O Compose injeta `DATABASE_URL` no backend
+usando o nome DNS interno `database`, e só inicia a API depois que o banco
+estiver saudável.
