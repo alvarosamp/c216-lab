@@ -1,10 +1,11 @@
-.PHONY: help install test lint format run clean
+.PHONY: help install test lint format run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell
 
 BACKEND_DIR := backend
 POETRY := py -m poetry
 PYTEST := $(POETRY) run pytest
 UVICORN := $(POETRY) run uvicorn
 RUFF := $(POETRY) run ruff
+COMPOSE := docker compose
 
 help:
 	@echo "Comandos disponíveis:"
@@ -14,6 +15,13 @@ help:
 	@echo "  make format   - formata o código"
 	@echo "  make run      - inicia o servidor"
 	@echo "  make clean    - remove arquivos temporários"
+	@echo "  make docker-build   - constrói a imagem do backend"
+	@echo "  make docker-up      - inicia backend e banco em segundo plano"
+	@echo "  make docker-down    - encerra os containers"
+	@echo "  make docker-logs    - acompanha os logs dos serviços"
+	@echo "  make docker-ps      - exibe o estado dos serviços"
+	@echo "  make docker-restart - reinicia os serviços"
+	@echo "  make db-shell       - abre o terminal SQL do PostgreSQL"
 
 install:
 	cd $(BACKEND_DIR) && $(POETRY) install
@@ -33,3 +41,24 @@ run:
 clean:
 	find $(BACKEND_DIR) -type d -name "__pycache__" -exec rm -rf {} +
 	find $(BACKEND_DIR) -type d -name ".pytest_cache" -exec rm -rf {} +
+
+docker-build:
+	$(COMPOSE) build
+
+docker-up:
+	$(COMPOSE) up -d --build
+
+docker-down:
+	$(COMPOSE) down
+
+docker-logs:
+	$(COMPOSE) logs -f
+
+docker-ps:
+	$(COMPOSE) ps
+
+docker-restart:
+	$(COMPOSE) restart
+
+db-shell:
+	$(COMPOSE) exec database psql -U $${POSTGRES_USER:-finance} -d $${POSTGRES_DB:-finance}
