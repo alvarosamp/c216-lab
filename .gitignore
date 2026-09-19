@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Ambientes e credenciais locais
+.venv/
+.env
+
+# Ferramentas de teste e qualidade
+.pytest_cache/
+.ruff_cache/
