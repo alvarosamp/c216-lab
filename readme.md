@@ -22,3 +22,14 @@ POSTGRES_DB=finance POSTGRES_USER=finance POSTGRES_PASSWORD=finance BACKEND_PORT
 ```
 
 Use `make help` para consultar os demais comandos do projeto.
+
+## Testes e qualidade
+
+Execute todas as verificações locais com:
+
+```bash
+make check
+```
+
+Também é possível executar somente os testes com `make test`. O GitHub Actions
+repete essas verificações automaticamente em pushes e pull requests.
