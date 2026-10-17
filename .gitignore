@@ -9,3 +9,7 @@ __pycache__/
 # Ferramentas de teste e qualidade
 .pytest_cache/
 .ruff_cache/
+
+# Arquivos locais usados para conferir a aula
+task-review-5/
+.task-review/
