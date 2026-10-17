@@ -1,41 +1,20 @@
 from decimal import Decimal
-from enum import StrEnum
 
-from pydantic import BaseModel, Field, model_validator
+from sqlalchemy import CheckConstraint, Numeric, String
+from sqlalchemy.orm import Mapped, mapped_column
 
-
-class TransactionType(StrEnum):
-    INCOME = "income"
-    EXPENSE = "expense"
+from backend.database.base import Base
 
 
-class TransactionBase(BaseModel):
-    description: str = Field(min_length=3, max_length=100)
-    amount: Decimal = Field(gt=0, decimal_places=2)
-    type: TransactionType
-    category: str | None = Field(default=None, max_length=50)
+class Transaction(Base):
+    __tablename__ = "transactions"
+    __table_args__ = (
+        CheckConstraint("amount > 0", name="ck_transactions_amount_positive"),
+        CheckConstraint("type IN ('income', 'expense')", name="ck_transactions_type"),
+    )
 
-
-class TransactionCreate(TransactionBase):
-    pass
-
-
-class TransactionUpdate(TransactionBase):
-    pass
-
-
-class TransactionPatch(BaseModel):
-    description: str | None = Field(default=None, min_length=3, max_length=100)
-    amount: Decimal | None = Field(default=None, gt=0, decimal_places=2)
-    type: TransactionType | None = None
-    category: str | None = Field(default=None, max_length=50)
-
-    @model_validator(mode="after")
-    def check_fields(self) -> "TransactionPatch":
-        if not self.model_fields_set:
-            raise ValueError("At least one field must be provided")
-        return self
-
-
-class TransactionResponse(TransactionBase):
-    id: int
+    id: Mapped[int] = mapped_column(primary_key=True)
+    description: Mapped[str] = mapped_column(String(100))
+    amount: Mapped[Decimal] = mapped_column(Numeric())
+    type: Mapped[str] = mapped_column(String(7))
+    category: Mapped[str | None] = mapped_column(String(50))

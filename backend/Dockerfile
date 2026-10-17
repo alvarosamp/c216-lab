@@ -25,9 +25,11 @@ RUN addgroup --system app && adduser --system --ingroup app app
 
 COPY --from=builder /app/.venv ./.venv
 COPY --chown=app:app src ./src
+COPY --chown=app:app alembic.ini ./alembic.ini
+COPY --chown=app:app alembic ./alembic
 
 USER app
 
 EXPOSE 8000
 
-CMD ["uvicorn", "backend.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "alembic upgrade head && exec uvicorn backend.main:app --host 0.0.0.0 --port 8000"]

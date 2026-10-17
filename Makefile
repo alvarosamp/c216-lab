@@ -1,4 +1,4 @@
-.PHONY: help install test lint format format-check check run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell
+.PHONY: help install test lint format format-check check run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell db-upgrade db-migration db-current db-history
 
 BACKEND_DIR := backend
 POETRY := py -m poetry
@@ -24,6 +24,10 @@ help:
 	@echo "  make docker-ps      - exibe o estado dos serviços"
 	@echo "  make docker-restart - reinicia os serviços"
 	@echo "  make db-shell       - abre o terminal SQL do PostgreSQL"
+	@echo "  make db-upgrade     - aplica as migrations"
+	@echo "  make db-migration msg=descricao - gera uma migration"
+	@echo "  make db-current     - mostra a migration atual"
+	@echo "  make db-history     - mostra o histórico de migrations"
 
 install:
 	cd $(BACKEND_DIR) && $(POETRY) install
@@ -69,3 +73,15 @@ docker-restart:
 
 db-shell:
 	$(COMPOSE) exec database psql -U $${POSTGRES_USER:-finance} -d $${POSTGRES_DB:-finance}
+
+db-upgrade:
+	cd $(BACKEND_DIR) && $(POETRY) run alembic upgrade head
+
+db-migration:
+	cd $(BACKEND_DIR) && $(POETRY) run alembic revision --autogenerate -m "$(msg)"
+
+db-current:
+	cd $(BACKEND_DIR) && $(POETRY) run alembic current
+
+db-history:
+	cd $(BACKEND_DIR) && $(POETRY) run alembic history

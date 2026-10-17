@@ -26,7 +26,7 @@ def create_transaction(client: TestClient, **values: str) -> dict:
 def test_create_transaction(client: TestClient) -> None:
     transaction = create_transaction(client)
 
-    assert transaction["id"] == 1
+    assert transaction["id"] > 0
     assert transaction["description"] == "Internet"
     assert Decimal(transaction["amount"]) == Decimal("120.50")
 
@@ -111,3 +111,14 @@ def test_rejects_empty_patch(client: TestClient) -> None:
     response = client.patch(f"/transactions/{transaction['id']}", json={})
 
     assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+
+
+def test_patch_can_clear_category(client: TestClient) -> None:
+    transaction = create_transaction(client)
+
+    response = client.patch(
+        f"/transactions/{transaction['id']}", json={"category": None}
+    )
+
+    assert response.status_code == HTTPStatus.OK
+    assert response.json()["category"] is None

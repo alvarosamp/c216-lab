@@ -1,7 +1,6 @@
 # Backend — Controle Financeiro
 
-API simples para cadastrar receitas e despesas. Os dados ficam em memória e são
-reiniciados junto com a aplicação.
+API para cadastrar receitas e despesas no PostgreSQL, com SQLAlchemy e Alembic.
 
 ## Requisitos
 
@@ -12,10 +11,13 @@ reiniciados junto com a aplicação.
 ## Instalação
 
 ```bash
+cd backend
 poetry install
 ```
 
 ## Comandos
+
+Na raiz do repositório:
 
 ```bash
 make help
@@ -45,6 +47,10 @@ make check
 
 O workflow `.github/workflows/ci-backend.yml` executa a formatação, o lint e os
 testes automaticamente em pushes e pull requests que alterem o backend.
+No CI, os testes de integração usam PostgreSQL. Localmente, usam um arquivo
+SQLite temporário, com o schema criado pela migration. Para testar em PostgreSQL,
+defina `TEST_DATABASE_URL` apontando para um banco exclusivo de testes.
+Cada teste de endpoint usa uma transação revertida no final.
 
 Com o servidor em execução, acesse `http://127.0.0.1:8000/health`.
 
@@ -80,3 +86,20 @@ Na raiz do repositório, execute `make docker-up` para construir a imagem e
 iniciar a API junto com o PostgreSQL. O Compose injeta `DATABASE_URL` no backend
 usando o nome DNS interno `database`, e só inicia a API depois que o banco
 estiver saudável.
+As migrations são aplicadas antes de iniciar o servidor. O volume do banco
+mantém os lançamentos mesmo quando o backend é reiniciado.
+
+## Organização e banco
+
+- `api/`: rotas e dependências HTTP.
+- `schemas/`: validação dos dados de entrada e resposta com Pydantic.
+- `models/`: tabela `transactions` mapeada com SQLAlchemy.
+- `services/`: operações de lançamentos.
+- `repositories/`: consultas, gravações e exclusões no banco.
+- `database/`: base dos modelos, conexão e sessão por requisição.
+- `alembic/`: histórico de alterações do schema.
+
+O endereço da conexão vem de `DATABASE_URL`. Para rodar a API localmente, a
+conexão padrão usa `localhost:5432`, banco `finance`, usuário `finance` e senha
+`finance`. Na raiz, use `make db-upgrade` para aplicar migrations e
+`make db-migration msg="descricao"` para gerar uma nova revisão.

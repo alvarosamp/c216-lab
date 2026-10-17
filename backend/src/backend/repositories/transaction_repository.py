@@ -1,25 +1,35 @@
-from backend.models.transaction import TransactionResponse
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
+from backend.models.transaction import Transaction
 
 
 class TransactionRepository:
-    def __init__(self) -> None:
-        self._transactions: dict[int, TransactionResponse] = {}
-        self._next_id = 1
+    def __init__(self, session: Session) -> None:
+        self.session = session
 
-    def list(self) -> list[TransactionResponse]:
-        return list(self._transactions.values())
+    def list(self) -> list[Transaction]:
+        return list(self.session.scalars(select(Transaction).order_by(Transaction.id)))
 
-    def get(self, transaction_id: int) -> TransactionResponse | None:
-        return self._transactions.get(transaction_id)
+    def get(self, transaction_id: int) -> Transaction | None:
+        return self.session.get(Transaction, transaction_id)
 
-    def save(self, transaction: TransactionResponse) -> TransactionResponse:
-        self._transactions[transaction.id] = transaction
+    def save(self, transaction: Transaction) -> Transaction:
+        self.session.add(transaction)
+        try:
+            self.session.commit()
+        except Exception:
+            self.session.rollback()
+            raise
+        self.session.refresh(transaction)
         return transaction
 
-    def next_id(self) -> int:
-        transaction_id = self._next_id
-        self._next_id += 1
-        return transaction_id
-
     def delete(self, transaction_id: int) -> None:
-        del self._transactions[transaction_id]
+        transaction = self.get(transaction_id)
+        if transaction is not None:
+            self.session.delete(transaction)
+            try:
+                self.session.commit()
+            except Exception:
+                self.session.rollback()
+                raise

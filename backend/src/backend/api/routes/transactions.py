@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Query, Response, status
 
 from backend.api.dependencies import get_transaction_service
-from backend.models.transaction import (
+from backend.schemas.transaction import (
     TransactionCreate,
     TransactionPatch,
     TransactionResponse,
