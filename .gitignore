@@ -9,3 +9,14 @@ __pycache__/
 # Ferramentas de teste e qualidade
 .pytest_cache/
 .ruff_cache/
+
+# Arquivos locais usados para conferir a aula
+task-review-5/
+.task-review/
+
+# Frontend
+node_modules/
+.npm-cache/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
