@@ -6,7 +6,7 @@
 | --- | --- |
 | Título | `[C216 L1] [Prática 6] Entrega do Relatório da Prática 6` |
 | Base | `pratica-5`, enquanto o PR da V estiver pendente |
-| Branch | `codex/pratica-6` |
+| Branch | `pratica-6` |
 | Assignee | `alvarosamp` |
 | Reviewer | `MatheusNetto1` |
 | Labels | `Prática 6`, `Frontend`, `CI/CD`, `Em revisão` |
@@ -55,7 +55,7 @@ ao recarregar a página.
 ```bash
 git add frontend .github/workflows/ci-frontend.yml Makefile .gitignore readme.md docs/pratica-6-entrega.md docs/pratica-6-pr-body.md
 git commit -m "feat(frontend): adiciona interface da pratica 6"
-git push -u origin codex/pratica-6
+git push -u origin pratica-6
 ```
 
 Depois, abra o PR com os campos acima e confira os checks no GitHub.
