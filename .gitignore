@@ -13,3 +13,10 @@ __pycache__/
 # Arquivos locais usados para conferir a aula
 task-review-5/
 .task-review/
+
+# Frontend
+node_modules/
+.npm-cache/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/

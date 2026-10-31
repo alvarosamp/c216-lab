@@ -1,7 +1,15 @@
 # C216 Lab
 
-Projeto das práticas de Sistemas Distribuídos. A aplicação é composta por uma
-API FastAPI e um banco PostgreSQL, orquestrados com Docker Compose.
+Projeto das práticas de Sistemas Distribuídos: controle financeiro com API
+FastAPI, banco PostgreSQL e frontend React.
+
+## Frontend da Prática VI
+
+O controle financeiro também possui uma interface React com JavaScript, Vite
+e Tailwind CSS. Nesta prática, receitas e despesas ficam em memória, sem
+integração com a API. Execute `make front-install` e `make front-dev`.
+Para validar, instale o navegador com `make front-e2e-install` e execute
+`make front-check`. Veja os detalhes em [frontend/README.md](frontend/README.md).
 
 ## API de lançamentos
 

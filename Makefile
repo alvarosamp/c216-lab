@@ -6,6 +6,10 @@ PYTEST := $(POETRY) run pytest
 UVICORN := $(POETRY) run uvicorn
 RUFF := $(POETRY) run ruff
 COMPOSE := docker compose
+FRONTEND_DIR := frontend
+NPM := npm
+
+.PHONY: front-install front-dev front-build front-preview front-lint front-format front-format-check front-test front-test-e2e front-check front-e2e-install
 
 help:
 	@echo "Comandos disponíveis:"
@@ -28,6 +32,17 @@ help:
 	@echo "  make db-migration msg=descricao - gera uma migration"
 	@echo "  make db-current     - mostra a migration atual"
 	@echo "  make db-history     - mostra o histórico de migrations"
+	@echo "  make front-install  - instala dependências do frontend"
+	@echo "  make front-dev      - inicia o frontend no Vite"
+	@echo "  make front-build    - gera o build do frontend"
+	@echo "  make front-preview  - serve o build do frontend"
+	@echo "  make front-lint     - verifica o frontend com Biome"
+	@echo "  make front-format   - formata o frontend"
+	@echo "  make front-format-check - verifica a formatação do frontend"
+	@echo "  make front-test     - executa testes Vitest"
+	@echo "  make front-e2e-install - instala Chromium para os testes"
+	@echo "  make front-test-e2e - executa testes Playwright"
+	@echo "  make front-check    - verifica qualidade, testes e build do frontend"
 
 install:
 	cd $(BACKEND_DIR) && $(POETRY) install
@@ -85,3 +100,39 @@ db-current:
 
 db-history:
 	cd $(BACKEND_DIR) && $(POETRY) run alembic history
+
+front-install:
+	cd $(FRONTEND_DIR) && $(NPM) ci
+
+front-dev:
+	cd $(FRONTEND_DIR) && $(NPM) run dev
+
+front-build:
+	cd $(FRONTEND_DIR) && $(NPM) run build
+
+front-preview:
+	cd $(FRONTEND_DIR) && $(NPM) run preview
+
+front-lint:
+	cd $(FRONTEND_DIR) && $(NPM) run lint
+
+front-format:
+	cd $(FRONTEND_DIR) && $(NPM) run format
+
+front-format-check:
+	cd $(FRONTEND_DIR) && $(NPM) run format:check
+
+front-test:
+	cd $(FRONTEND_DIR) && $(NPM) test
+
+front-e2e-install:
+	cd $(FRONTEND_DIR) && $(NPM) exec playwright install chromium
+
+front-test-e2e:
+	cd $(FRONTEND_DIR) && $(NPM) run test:e2e
+
+front-check:
+	cd $(FRONTEND_DIR) && $(NPM) run check
+	cd $(FRONTEND_DIR) && $(NPM) test
+	cd $(FRONTEND_DIR) && $(NPM) run build
+	cd $(FRONTEND_DIR) && $(NPM) run test:e2e
