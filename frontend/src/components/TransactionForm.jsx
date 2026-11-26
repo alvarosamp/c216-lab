@@ -19,18 +19,18 @@ export default function TransactionForm({ transaction, onSave, onCancel }) {
     setForm((current) => ({ ...current, [name]: value }));
   }
 
-  function submit(event) {
+  async function submit(event) {
     event.preventDefault();
     const nextErrors = validateTransaction(form);
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
-    onSave({
+    const saved = await onSave({
       ...form,
       description: form.description.trim(),
       amount: String(form.amount).trim().replace(',', '.'),
       category: form.category.trim(),
     });
-    setForm(emptyForm);
+    if (saved) setForm(emptyForm);
   }
 
   return (

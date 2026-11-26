@@ -1,4 +1,4 @@
-.PHONY: help install test lint format format-check check run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell db-upgrade db-migration db-current db-history
+.PHONY: help install test backend-test lint format format-check check run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell db-upgrade db-migration db-current db-history
 
 BACKEND_DIR := backend
 POETRY := py -m poetry
@@ -47,7 +47,9 @@ help:
 install:
 	cd $(BACKEND_DIR) && $(POETRY) install
 
-test:
+test: backend-test front-test front-test-e2e
+
+backend-test:
 	cd $(BACKEND_DIR) && $(PYTEST) -v
 
 lint:
@@ -59,7 +61,7 @@ format:
 format-check:
 	cd $(BACKEND_DIR) && $(RUFF) format --check .
 
-check: format-check lint test
+check: format-check lint backend-test front-check
 
 run:
 	cd $(BACKEND_DIR) && $(UVICORN) backend.main:app --reload

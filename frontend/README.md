@@ -1,13 +1,19 @@
 # Frontend do Controle Financeiro
 
+## Prática VII
+
+O frontend agora consome a API FastAPI e persiste lançamentos no PostgreSQL.
+Execute `make docker-up` na raiz e acesse `http://localhost:5173`.
+As chamadas ficam em `src/services/transactions.js`. Para os testes de ponta
+a ponta, instale o Chromium com `make front-e2e-install` e rode `make test`
+com Docker ativo.
+
 Prática VI: React com JavaScript, Vite, Tailwind CSS v4 e npm. O frontend
 permite cadastrar, editar, excluir e filtrar receitas e despesas. O resumo
 mostra receitas, despesas e saldo de todos os lançamentos, independentemente
 do filtro da lista.
 
-Os dados ficam somente no estado React e são apagados ao recarregar a página.
-Esta prática não consome a API, não usa armazenamento local e não acrescenta
-containerização ao frontend.
+O frontend consulta a API e mantém os dados no PostgreSQL.
 
 ## Executar
 
@@ -31,7 +37,7 @@ make front-check
 
 O primeiro comando instala o Chromium usado pelo Playwright. O segundo verifica
 lint, formatação e imports com Biome, executa Vitest, gera o build e executa
-Playwright. O Playwright inicia e encerra o Vite automaticamente.
+Playwright. O Playwright inicia os serviços com Docker Compose quando necessário.
 
 Comandos individuais: `make front-lint`, `make front-format`,
 `make front-format-check`, `make front-test`, `make front-test-e2e`,
@@ -61,3 +67,4 @@ JavaScript são rejeitados no formulário.
 - [Tailwind com Vite](https://tailwindcss.com/docs/installation/using-vite)
 - [Configuração do Vitest](https://vitest.dev/config/)
 - [Servidor de testes Playwright](https://playwright.dev/docs/test-webserver)
+

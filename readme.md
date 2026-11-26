@@ -3,11 +3,21 @@
 Projeto das práticas de Sistemas Distribuídos: controle financeiro com API
 FastAPI, banco PostgreSQL e frontend React.
 
+## Integração da Prática VII
+
+O frontend consulta e altera os lançamentos pela API. O PostgreSQL mantém os
+dados após recarregar a página ou reiniciar os serviços. Execute
+`make docker-up` e acesse `http://localhost:5173`; a documentação da API
+fica em `http://localhost:8000/docs`. Para validar backend, frontend e fluxo
+real no navegador, execute `make test` (Docker e Chromium Playwright necessários).
+Configure `VITE_API_URL` com o endereço da API acessível pelo navegador e
+`CORS_ORIGINS` com a origem exata da página se alterar as portas.
+
 ## Frontend da Prática VI
 
 O controle financeiro também possui uma interface React com JavaScript, Vite
-e Tailwind CSS. Nesta prática, receitas e despesas ficam em memória, sem
-integração com a API. Execute `make front-install` e `make front-dev`.
+e Tailwind CSS. A interface foi integrada à API na Prática VII.
+Execute `make front-install` e `make front-dev` com o backend ativo.
 Para validar, instale o navegador com `make front-e2e-install` e execute
 `make front-check`. Veja os detalhes em [frontend/README.md](frontend/README.md).
 
