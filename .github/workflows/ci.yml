@@ -1,0 +1,94 @@
+name: CI - Strategy Lab
+
+on:
+  push:
+    branches: [projeto-final]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_DB: strategies_test
+          POSTGRES_USER: strategies
+          POSTGRES_PASSWORD: local_dev_password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U strategies -d strategies_test"
+          --health-interval 3s --health-timeout 3s --health-retries 20
+    env:
+      TEST_DATABASE_URL: postgresql+psycopg://strategies:local_dev_password@localhost:5432/strategies_test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: poetry
+          cache-dependency-path: backend/poetry.lock
+      - name: Install Poetry
+        run: pipx install poetry==2.4.1
+      - name: Install backend
+        working-directory: backend
+        run: poetry install --no-interaction
+      - name: Lint and format
+        working-directory: backend
+        run: poetry run ruff check . && poetry run ruff format --check .
+      - name: API and business tests
+        working-directory: backend
+        run: poetry run pytest
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install frontend
+        working-directory: frontend
+        run: npm ci
+      - name: Lint, test and build
+        working-directory: frontend
+        run: npm run lint && npm run test && npm run build
+
+  integrated-e2e:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install Playwright
+        working-directory: frontend
+        run: npm ci && npx playwright install --with-deps chromium
+      - name: Start complete application
+        run: docker compose up --build -d
+      - name: Wait for API and frontend
+        run: |
+          for i in $(seq 1 90); do
+            if curl -fsS http://localhost:8000/health && curl -fsS http://localhost:5173/ > /dev/null; then exit 0; fi
+            sleep 2
+          done
+          docker compose logs
+          exit 1
+      - name: Run browser-to-database test
+        working-directory: frontend
+        run: npm run test:e2e
+      - name: Show service logs on failure
+        if: failure()
+        run: docker compose logs
+      - name: Stop services
+        if: always()
+        run: docker compose down -v
