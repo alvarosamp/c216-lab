@@ -28,7 +28,7 @@ O código fica em `backend/src/investment_lab` (`api`, `services`, `repositories
 
 ## Executar
 
-Pré-requisitos: Docker Desktop/Engine com Compose e `make`. Copie `.env.example` para `.env` se quiser alterar as configurações de desenvolvimento. Os valores padrão funcionam localmente sem criar o arquivo. Ao mudar usuário, senha ou banco do PostgreSQL, atualize também `DATABASE_URL` para apontar para `database:5432` dentro do Compose. Não versione credenciais reais.
+Pré-requisitos: Docker Desktop/Engine com Compose e `make`. Para desenvolver fora dos contêineres, use Python 3.11 a 3.13, Poetry 2.4.1, Node.js 22 e npm. Copie `.env.example` para `.env` se quiser alterar as configurações de desenvolvimento. Os valores padrão funcionam localmente sem criar o arquivo. Ao mudar usuário, senha ou banco do PostgreSQL, atualize também `DATABASE_URL` para apontar para `database:5432` dentro do Compose. Não versione credenciais reais.
 
 ```bash
 make up
