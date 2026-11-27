@@ -27,12 +27,12 @@ Os testes unitários de cálculo e persistência, testes de interface, lint, bui
 
 ### Vídeo
 
-Inserir aqui o link do vídeo gravado pelo aluno e repetir o mesmo link no README e na entrega do Teams.
+[Vídeo demonstrativo no Google Drive](https://drive.google.com/drive/folders/14bsvN-OvFJeSU57WXkk8sI3pkYfC-2FX?usp=sharing). Repetir o link na entrega do Teams.
 
 ## Antes de entregar no Teams
 
 1. Conferir que o push de `projeto-final` terminou e que os três jobs do CI passaram.
 2. Abrir o PR com o título, origem e destino acima, deixando-o aberto.
-3. Gravar a demonstração narrada de 5 a 10 minutos da aplicação real, persistência, Compose e checks.
-4. Colocar o link do vídeo no README, fazer commit/push dessa alteração e aguardar os checks novamente.
+3. Conferir se o link do vídeo permite acesso aos avaliadores e se a gravação mostra aplicação real, persistência, Compose e checks.
+4. Confirmar o link do vídeo no README e aguardar os checks após o commit/push.
 5. Enviar no Teams links do repositório, PR e vídeo até 28/11/2026.

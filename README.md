@@ -70,7 +70,7 @@ Para criar uma migration após mudar os modelos: `make db-revision msg="descrica
 
 ## Vídeo demonstrativo
 
-**Link do vídeo:** a inserir pelo aluno antes da entrega no Teams. O vídeo deve mostrar o Compose subindo, CRUD, duas estratégias no mesmo período, comparação, persistência após atualização e resultados do GitHub Actions, com narração do aluno (5 a 10 minutos recomendados no enunciado).
+**Vídeo demonstrativo:** [assistir no Google Drive](https://drive.google.com/drive/folders/14bsvN-OvFJeSU57WXkk8sI3pkYfC-2FX?usp=sharing).
 
 ## Entrega
 
