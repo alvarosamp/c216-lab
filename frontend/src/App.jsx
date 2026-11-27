@@ -899,6 +899,7 @@ export default function App() {
                         <label>
                           Série
                           <select
+                            aria-label="Série"
                             required
                             value={simulationForm.series_id}
                             onChange={(e) =>
@@ -919,6 +920,7 @@ export default function App() {
                         <label>
                           Estratégia
                           <select
+                            aria-label="Estratégia"
                             required
                             value={simulationForm.strategy_id}
                             onChange={(e) =>
