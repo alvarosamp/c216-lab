@@ -213,7 +213,9 @@ export default function App() {
               className={`nav-item ${page === key ? 'active' : ''}`}
               onClick={() => setPage(key)}
             >
-              <span className="nav-icon">{icon}</span>
+              <span className="nav-icon" aria-hidden="true">
+                {icon}
+              </span>
               {label}
             </button>
           ))}
