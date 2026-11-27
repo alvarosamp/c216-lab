@@ -1,71 +1,45 @@
-.PHONY: help install test lint format format-check check run clean docker-build docker-up docker-down docker-logs docker-ps docker-restart db-shell
-
-BACKEND_DIR := backend
-POETRY := py -m poetry
-PYTEST := $(POETRY) run pytest
-UVICORN := $(POETRY) run uvicorn
-RUFF := $(POETRY) run ruff
-COMPOSE := docker compose
+.PHONY: help up down logs install db-upgrade db-revision backend-test backend-lint frontend-test frontend-lint frontend-build e2e test check
 
 help:
-	@echo "Comandos disponíveis:"
-	@echo "  make install  - instala dependências"
-	@echo "  make test     - executa testes"
-	@echo "  make lint     - verifica o código"
-	@echo "  make format   - formata o código"
-	@echo "  make format-check - verifica a formatação sem alterar arquivos"
-	@echo "  make check    - executa formatação, lint e testes"
-	@echo "  make run      - inicia o servidor"
-	@echo "  make clean    - remove arquivos temporários"
-	@echo "  make docker-build   - constrói a imagem do backend"
-	@echo "  make docker-up      - inicia backend e banco em segundo plano"
-	@echo "  make docker-down    - encerra os containers"
-	@echo "  make docker-logs    - acompanha os logs dos serviços"
-	@echo "  make docker-ps      - exibe o estado dos serviços"
-	@echo "  make docker-restart - reinicia os serviços"
-	@echo "  make db-shell       - abre o terminal SQL do PostgreSQL"
+	@echo "make up | down | logs | install | db-upgrade | db-revision msg=... | test | check | e2e"
+
+up:
+	docker compose up -d --build
+
+down:
+	docker compose down
+
+logs:
+	docker compose logs -f
 
 install:
-	cd $(BACKEND_DIR) && $(POETRY) install
+	cd backend && poetry install
+	cd frontend && npm ci
 
-test:
-	cd $(BACKEND_DIR) && $(PYTEST) -v
+db-upgrade:
+	docker compose exec backend poetry run alembic upgrade head
 
-lint:
-	cd $(BACKEND_DIR) && $(RUFF) check .
+db-revision:
+	cd backend && poetry run alembic revision --autogenerate -m "$(msg)"
 
-format:
-	cd $(BACKEND_DIR) && $(RUFF) format .
+backend-test:
+	cd backend && poetry run pytest
 
-format-check:
-	cd $(BACKEND_DIR) && $(RUFF) format --check .
+backend-lint:
+	cd backend && poetry run ruff check . && poetry run ruff format --check .
 
-check: format-check lint test
+frontend-test:
+	cd frontend && npm run test
 
-run:
-	cd $(BACKEND_DIR) && $(UVICORN) backend.main:app --reload
+frontend-lint:
+	cd frontend && npm run lint
 
-clean:
-	find $(BACKEND_DIR) -type d -name "__pycache__" -exec rm -rf {} +
-	find $(BACKEND_DIR) -type d -name ".pytest_cache" -exec rm -rf {} +
+frontend-build:
+	cd frontend && npm run build
 
-docker-build:
-	$(COMPOSE) build
+e2e:
+	cd frontend && npm run test:e2e
 
-docker-up:
-	$(COMPOSE) up -d --build
+test: backend-test frontend-test e2e
 
-docker-down:
-	$(COMPOSE) down
-
-docker-logs:
-	$(COMPOSE) logs -f
-
-docker-ps:
-	$(COMPOSE) ps
-
-docker-restart:
-	$(COMPOSE) restart
-
-db-shell:
-	$(COMPOSE) exec database psql -U $${POSTGRES_USER:-finance} -d $${POSTGRES_DB:-finance}
+check: backend-lint backend-test frontend-lint frontend-test frontend-build e2e

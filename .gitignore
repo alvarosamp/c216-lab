@@ -1,11 +1,10 @@
-# Python
-__pycache__/
-*.py[cod]
-
-# Ambientes e credenciais locais
-.venv/
 .env
-
-# Ferramentas de teste e qualidade
+.venv/
+__pycache__/
 .pytest_cache/
 .ruff_cache/
+node_modules/
+dist/
+test-results/
+playwright-report/
+*.pyc
