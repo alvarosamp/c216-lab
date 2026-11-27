@@ -13,9 +13,11 @@ test('cadastra, simula e confirma persistência após recarregar', async ({
   await page.getByLabel('Data', { exact: true }).fill('2026-01-05')
   await page.getByLabel('Preço de fechamento').fill('100')
   await page.getByRole('button', { name: 'Adicionar cotação' }).click()
+  await expect(page.locator('tbody tr')).toHaveCount(1)
   await page.getByLabel('Data', { exact: true }).fill('2026-02-05')
   await page.getByLabel('Preço de fechamento').fill('120')
   await page.getByRole('button', { name: 'Adicionar cotação' }).click()
+  await expect(page.locator('tbody tr')).toHaveCount(2)
 
   await page.getByRole('button', { name: 'Estratégias', exact: true }).click()
   await page.getByLabel('Nome', { exact: true }).fill(`Aporte E2E ${suffix}`)
@@ -23,6 +25,7 @@ test('cadastra, simula e confirma persistência após recarregar', async ({
   await page.getByLabel('Capital inicial (R$)').fill('1000')
   await page.getByLabel('Aporte mensal (R$)').fill('200')
   await page.getByRole('button', { name: 'Cadastrar estratégia' }).click()
+  await expect(page.getByText('Estratégia cadastrada.')).toBeVisible()
 
   await page.getByRole('button', { name: 'Nova simulação' }).click()
   await page
